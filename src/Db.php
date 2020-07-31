@@ -79,7 +79,7 @@ class Db
 
         // Собираем все объекты в $o
         $o = new stdClass();
-        $dbs = $this->config['dbs'];
+        $dbs = $this->config['databases'];
         foreach ($dbs as $db => $conn) {
             $dsn       = $conn['dsn'];
             $cacheFunc = isset($conn['pCacheFunc']) ? $conn['pCacheFunc'] : null;
