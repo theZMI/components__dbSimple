@@ -17,7 +17,7 @@
   },
   "autoload": {
     "files": [
-      "src/Db.php"
+      "src/Dbs.php"
     ]
   }
 }

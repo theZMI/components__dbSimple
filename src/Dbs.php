@@ -5,7 +5,7 @@
  *
  * @author Zmi
  */
-class Db
+class Dbs
 {
     private $databases = null;
     public $config = [
