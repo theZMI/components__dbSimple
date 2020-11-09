@@ -43,7 +43,7 @@ class Dbs
 
         static $fileLogger = null;
 
-        $self = Db::GetInstance();
+        $self = Dbs::GetInstance();
         $logPath = $self->config['dbLogFile'];
 
         if ($logPath) {
