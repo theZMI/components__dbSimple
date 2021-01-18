@@ -13,7 +13,7 @@ class MyDataBaseLog
     /**
      * Устанавливает функцию на ошибку запроса
      */
-    public static function SetFuncOnError($func)
+    public static function setFuncOnError($func)
     {
         self::$pFuncOnError = $func;
     }
@@ -21,7 +21,7 @@ class MyDataBaseLog
     /**
      * Определить функцию на получение ошибки в $info наиболее полезные параметры [query, message, code, context]
      */
-    public static function Error($message, $info)
+    public static function error($message, $info)
     {
         if (!error_reporting()) {
             return;
@@ -35,7 +35,7 @@ class MyDataBaseLog
     /**
      * Функция логирования запроса
      */
-    public static function Log($db, $sql)
+    public static function log($db, $sql)
     {
         $caller          = $db->findLibraryCaller();
         $log             = [];
@@ -53,7 +53,7 @@ class MyDataBaseLog
     /**
      * Показывает лог-табличку
      */
-    public static function Render()
+    public static function render()
     {
         $sameLog = [];
         foreach (self::$dbLog as $log) {

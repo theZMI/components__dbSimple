@@ -8,7 +8,7 @@
 class Dbs
 {
     private $databases = null;
-    public $config = [
+    public  $config    = [
         'logDbInfo'  => false, // Логгировать ли все запросы? (по умолчанию посмотреть можно в DebugPanel, внизу сайта)
         'logDbError' => true, // Логгировать запросы в которых произошла ошибка (по умолчанию в dbLogFile складываются)
         'dbLogFile'  => null,
@@ -20,14 +20,14 @@ class Dbs
                     'dsn'        => 'mysqli://root:@localhost/dbName?charset=UTF8', // Подключение к БД в формате DSN-строки
                     // Кеш ф-я
                     // Перед запросом который в кеш отправиться нужно написать "-- CACHE: 1h 5m 15" затем ENTER. Здесь h/m/цифра это часы/минут/секунды соотвественно
-                    'pCacheFunc' => ['MyDataBaseCache', 'Cache'],
+                    'pCacheFunc' => ['MyDataBaseCache', 'cache'],
                 ]
             */
         ],
     ];
 
     // Обработчик ошибок БД
-    public static function DbSimpleError($message, $info)
+    public static function dbSimpleError($message, $info)
     {
         if (!error_reporting()) {
             return;
@@ -45,12 +45,12 @@ class Dbs
 
         static $fileLogger = null;
 
-        $self = Dbs::GetInstance();
+        $self    = self::getInstance();
         $logPath = $self->config['dbLogFile'];
 
         if ($logPath) {
             if (is_null($fileLogger)) {
-                $fileLogger = FileLogger::Create($logPath);
+                $fileLogger = FileLogger::create($logPath);
             }
             $fileLogger->Error(
                 PHP_EOL .
@@ -80,7 +80,7 @@ class Dbs
         require_once $path . 'my/MyDataBaseCache.php';
 
         // Собираем все объекты в $o
-        $o = new stdClass();
+        $o   = new stdClass();
         $dbs = $this->config['databases'];
         foreach ($dbs as $db => $conn) {
             $dsn       = $conn['dsn'];
@@ -89,7 +89,7 @@ class Dbs
             $o->$db = DbSimple_Generic::connect($dsn);
 
             if ($this->config['logDbError']) {
-                MyDataBaseLog::SetFuncOnError([__CLASS__, 'DbSimpleError']);
+                MyDataBaseLog::setFuncOnError([__CLASS__, 'DbSimpleError']);
                 $o->$db->setErrorHandler(['MyDataBaseLog', 'Error']);
             }
 
@@ -106,7 +106,8 @@ class Dbs
         $this->databases = $o;
     }
 
-    public static function GetInstance($dbs = null) {
+    public static function getInstance($dbs = null)
+    {
         static $instance = null;
         if (is_null($instance)) {
             $instance = new self($dbs);
@@ -115,7 +116,8 @@ class Dbs
         return $instance;
     }
 
-    public function GetDatabases() {
+    public function getDatabases()
+    {
         return $this->databases;
     }
 }
