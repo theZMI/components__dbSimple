@@ -52,7 +52,7 @@ class Dbs
             if (is_null($fileLogger)) {
                 $fileLogger = FileLogger::create($logPath);
             }
-            $fileLogger->Error(
+            $fileLogger->error(
                 PHP_EOL .
                 "\tquery: " . $info['query'] . PHP_EOL .
                 "\tmessage: " . $info['message'] . PHP_EOL .
