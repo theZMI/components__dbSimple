@@ -92,7 +92,7 @@ class MyDataBaseLog
                         'errorMsg' => ''
                     ];
                     $log2    = self::$dbLog[$i + 1] ?? $defLog;
-                    $isError = empty($log2['error']) ? false : true;
+                    $isError = !empty($log2['error']);
 
                     $execTime  = $log2['time'] - $log1['time'];
                     $totalTime += $execTime;
