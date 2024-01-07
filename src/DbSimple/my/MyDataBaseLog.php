@@ -81,8 +81,8 @@ class MyDataBaseLog
                 $totalTime = 0;
                 $curElem   = 0;
                 for ($i = 0, $j = count(self::$dbLog); $i < $j; $i += 2) {
-                    $log1    = self::$dbLog[$i];
-                    $defLog  = [
+                    $log1      = self::$dbLog[$i];
+                    $defLog    = [
                         'q'        => '',
                         'file'     => '',
                         'line'     => 0,
@@ -91,9 +91,8 @@ class MyDataBaseLog
                         'error'    => '',
                         'errorMsg' => ''
                     ];
-                    $log2    = self::$dbLog[$i + 1] ?? $defLog;
-                    $isError = !empty($log2['error']);
-
+                    $log2      = self::$dbLog[$i + 1] ?? $defLog;
+                    $isError   = !empty($log2['error']);
                     $execTime  = $log2['time'] - $log1['time'];
                     $totalTime += $execTime;
                     $color     = $isError ? 'red' : 'green';
