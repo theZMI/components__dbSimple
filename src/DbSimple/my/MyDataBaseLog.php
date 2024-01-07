@@ -82,7 +82,16 @@ class MyDataBaseLog
                 $curElem   = 0;
                 for ($i = 0, $j = count(self::$dbLog); $i < $j; $i += 2) {
                     $log1    = self::$dbLog[$i];
-                    $log2    = isset(self::$dbLog[$i + 1]) ? self::$dbLog[$i + 1] : [];
+                    $defLog  = [
+                        'q'        => '',
+                        'file'     => '',
+                        'line'     => 0,
+                        'time'     => 0,
+                        'count'    => 0,
+                        'error'    => '',
+                        'errorMsg' => ''
+                    ];
+                    $log2    = self::$dbLog[$i + 1] ?? $defLog;
                     $isError = empty($log2['error']) ? false : true;
 
                     $execTime  = $log2['time'] - $log1['time'];
