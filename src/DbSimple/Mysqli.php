@@ -45,34 +45,38 @@ class DbSimple_Mysqli extends DbSimple_Database
             }
         }
 
-        if (isset($dsn['socket'])) {
-            // Socket connection
-            $this->link = mysqli_connect(
-                null                                         // host
-                , empty($dsn['user']) ? 'root' : $dsn['user'] // user
-                , empty($dsn['pass']) ? '' : $dsn['pass']     // password
-                , preg_replace('{^/}s', '', $dsn['path'])     // schema
-                , null                                        // port
-                , $dsn['socket']                              // socket
-            );
-        } elseif (isset($dsn['host'])) {
-            // Host connection
-            $this->link = mysqli_connect(
-                $dsn['host']
-                , empty($dsn['user']) ? 'root' : $dsn['user']
-                , empty($dsn['pass']) ? '' : $dsn['pass']
-                , preg_replace('{^/}s', '', $dsn['path'])
-                , empty($dsn['port']) ? null : $dsn['port']
-            );
-        } else {
-            return $this->_setDbError('mysqli_connect()');
-        }
-        $this->_resetLastError();
-        if (!$this->link) {
-            return $this->_setDbError('mysqli_connect()');
-        }
+        try {
+            if (isset($dsn['socket'])) {
+                // Socket connection
+                $this->link = mysqli_connect(
+                    null                                         // host
+                    , empty($dsn['user']) ? 'root' : $dsn['user'] // user
+                    , empty($dsn['pass']) ? '' : $dsn['pass']     // password
+                    , preg_replace('{^/}s', '', $dsn['path'])     // schema
+                    , null                                        // port
+                    , $dsn['socket']                              // socket
+                );
+            } elseif (isset($dsn['host'])) {
+                // Host connection
+                $this->link = mysqli_connect(
+                    $dsn['host']
+                    , empty($dsn['user']) ? 'root' : $dsn['user']
+                    , empty($dsn['pass']) ? '' : $dsn['pass']
+                    , preg_replace('{^/}s', '', $dsn['path'])
+                    , empty($dsn['port']) ? null : $dsn['port']
+                );
+            } else {
+                return $this->_setDbError('mysqli_connect()');
+            }
+            $this->_resetLastError();
+            if (!$this->link) {
+                return $this->_setDbError('mysqli_connect()');
+            }
 
-        mysqli_set_charset($this->link, isset($dsn['enc']) ? $dsn['enc'] : 'UTF8');
+            mysqli_set_charset($this->link, isset($dsn['enc']) ? $dsn['enc'] : 'UTF8');
+        } catch (\mysqli_sql_exception $exception) {
+            $this->_setDbError('mysqli_connect()');
+        }
     }
 
 
@@ -168,7 +172,12 @@ class DbSimple_Mysqli extends DbSimple_Database
     {
         $this->_lastQuery = $queryMain;
         $this->_expandPlaceholders($queryMain, false);
-        $result = mysqli_query($this->link, $queryMain[0]);
+        try {
+            $result = mysqli_query($this->link, $queryMain[0]);
+        } catch (\mysqli_sql_exception $exception) {
+            return $this->_setDbError($queryMain[0]);
+        }
+
         if ($result === false) {
             return $this->_setDbError($queryMain[0]);
         }

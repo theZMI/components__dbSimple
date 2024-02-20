@@ -42,8 +42,8 @@ class MyDataBaseLog
         $log['q']        = $sql;
         $log['file']     = $caller['file'];
         $log['line']     = $caller['line'];
-        $log['time']     = 0;//$caller['object']->_statistics['time'];
-        $log['count']    = 0;//$caller['object']->_statistics['count'];
+        $log['time']     = $caller['object']->_statistics['time'];
+        $log['count']    = $caller['object']->_statistics['count'];
         $log['error']    = $caller['object']->error;
         $log['errorMsg'] = $caller['object']->errmsg;
 
@@ -71,7 +71,7 @@ class MyDataBaseLog
         ob_start();
         ?>
         <div id="iDbLogger">
-            <table cellpadding="0" cellspacing="0">
+            <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <th>№</th>
                     <th>Query</th>

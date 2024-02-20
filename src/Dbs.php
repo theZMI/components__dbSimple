@@ -33,12 +33,12 @@ class Dbs
             return;
         }
 
-        if (stripos($info['query'], "mysql_connect(") !== false) // Не подсоединилась к БД
+        if (stripos($info['query'], "mysqli_connect(") !== false) // Не подсоединилась к БД
         {
             exit("Can not connect to database(s)"); // Не работаем дальше с кодом
         }
 
-        if (stripos($info['query'], "mysql_select_db(") !== false) // Не удалось найти БД после подключения к серверу с базами
+        if (stripos($info['query'], "mysqli_select_db(") !== false) // Не удалось найти БД после подключения к серверу с базами
         {
             exit("Can not select database(s)"); // Не работаем дальше с кодом
         }

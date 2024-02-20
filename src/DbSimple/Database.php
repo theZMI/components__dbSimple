@@ -1242,7 +1242,7 @@ abstract class DbSimple_Database extends DbSimple_LastError
     private $_identPrefix = '';
 
     // Queries statistics.
-    private $_statistics = array(
+    public $_statistics = array(
         'time'  => 0,
         'count' => 0,
     );
