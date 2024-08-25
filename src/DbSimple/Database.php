@@ -99,6 +99,10 @@ abstract class DbSimple_Database extends DbSimple_LastError
     /**
      * Public methods.
      */
+    /**
+     * @var array|bool|null
+     */
+    public $attributes;
 
     /**
      * object blob($blob_id)

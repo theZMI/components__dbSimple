@@ -25,6 +25,7 @@ require_once __DIR__ . '/Database.php';
 class DbSimple_Mysqli extends DbSimple_Database
 {
     var $link;
+    private $_lastQuery;
 
     /**
      * constructor(string $dsn)
@@ -32,7 +33,6 @@ class DbSimple_Mysqli extends DbSimple_Database
      */
     function __construct($dsn)
     {
-
         if (!is_callable("mysqli_connect")) {
             return $this->_setLastError("-1", "MySQLi extension is not loaded", "mysqli_connect");
         }
@@ -73,8 +73,8 @@ class DbSimple_Mysqli extends DbSimple_Database
                 return $this->_setDbError('mysqli_connect()');
             }
 
-            mysqli_set_charset($this->link, isset($dsn['enc']) ? $dsn['enc'] : 'UTF8');
-        } catch (\mysqli_sql_exception $exception) {
+            mysqli_set_charset($this->link, $dsn['enc'] ?? 'UTF8');
+        } catch (mysqli_sql_exception $exception) {
             $this->_setDbError('mysqli_connect()');
         }
     }
