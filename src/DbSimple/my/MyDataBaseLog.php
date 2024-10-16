@@ -7,15 +7,16 @@
  */
 class MyDataBaseLog
 {
-    private static $dbLog        = [];
-    private static $pFuncOnError = null;
+    public static $dbLog = [];
+
+    private static $onError = null;
 
     /**
      * Устанавливает функцию на ошибку запроса
      */
     public static function setFuncOnError($func)
     {
-        self::$pFuncOnError = $func;
+        self::$onError = $func;
     }
 
     /**
@@ -27,8 +28,8 @@ class MyDataBaseLog
             return;
         }
 
-        if (!empty(self::$pFuncOnError)) {
-            call_user_func(self::$pFuncOnError, $message, $info);
+        if (!empty(self::$onError)) {
+            call_user_func(self::$onError, $message, $info);
         }
     }
 
@@ -53,11 +54,13 @@ class MyDataBaseLog
     /**
      * Показывает лог-табличку
      */
-    public static function render()
+    public static function render($log = null)
     {
+        $log = $log ?: self::$dbLog;
+
         $sameLog = [];
-        foreach (self::$dbLog as $log) {
-            $query = $log['q'];
+        foreach ($log as $v) {
+            $query = $v['q'];
             if (strpos($query, ' ms; returned') !== false) {
                 continue;
             }
@@ -80,8 +83,7 @@ class MyDataBaseLog
                 <?php
                 $totalTime = 0;
                 $curElem   = 0;
-                for ($i = 0, $j = count(self::$dbLog); $i < $j; $i += 2) {
-                    $log1      = self::$dbLog[$i];
+                for ($i = 0, $j = count($log); $i < $j; $i += 2) {
                     $defLog    = [
                         'q'        => '',
                         'file'     => '',
@@ -91,7 +93,8 @@ class MyDataBaseLog
                         'error'    => '',
                         'errorMsg' => ''
                     ];
-                    $log2      = self::$dbLog[$i + 1] ?? $defLog;
+                    $log1      = $log[$i] ?? $defLog;
+                    $log2      = $log[$i + 1] ?? $defLog;
                     $isError   = !empty($log2['error']);
                     $execTime  = $log2['time'] - $log1['time'];
                     $totalTime += $execTime;
