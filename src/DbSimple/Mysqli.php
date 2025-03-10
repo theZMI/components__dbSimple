@@ -92,11 +92,12 @@ class DbSimple_Mysqli extends DbSimple_Database
     {
         $BM = function_exists('BM') ? 'BM' : function () {};
 
+        $queryLabel = $query[0] . '-' . uniqid();
         $benchmarkLabel = "Databases / Mysqli / "
             . (
-                strlen($query[0]) > 50
-                    ? substr($query[0], 0, 50)."...[more]{$query[0]}[/more]"
-                    : $query[0]
+                strlen($queryLabel) > 50
+                    ? substr($queryLabel, 0, 50)."...[more]{$queryLabel}[/more]"
+                    : $queryLabel
             );
         $BM($benchmarkLabel);
 
