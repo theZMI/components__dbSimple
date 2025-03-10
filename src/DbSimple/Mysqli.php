@@ -92,7 +92,12 @@ class DbSimple_Mysqli extends DbSimple_Database
     {
         $BM = function_exists('BM') ? 'BM' : function () {};
 
-        $benchmarkLabel = "Databases / Mysqli / " . $query[0];
+        $benchmarkLabel = "Databases / Mysqli / "
+            . (
+                strlen($query[0]) > 50
+                    ? substr($query[0], 0, 50)."...[more]{$query[0]}[/more]"
+                    : $query[0]
+            );
         $BM($benchmarkLabel);
 
         if (!$this->link) {
