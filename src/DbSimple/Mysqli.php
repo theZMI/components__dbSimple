@@ -24,15 +24,23 @@ require_once __DIR__ . '/Database.php';
  */
 class DbSimple_Mysqli extends DbSimple_Database
 {
-    var $link;
+    public $link;
     private $_lastQuery;
+    protected $dsn = '';
 
     /**
      * constructor(string $dsn)
      * Connect to MySQL server.
      */
-    function __construct($dsn)
+    public function __construct($dsn)
     {
+        $this->dsn = $dsn;
+    }
+
+    protected function lazyConnect()
+    {
+        $dsn = $this->dsn;
+
         if (!is_callable("mysqli_connect")) {
             return $this->_setLastError("-1", "MySQLi extension is not loaded", "mysqli_connect");
         }
@@ -77,6 +85,26 @@ class DbSimple_Mysqli extends DbSimple_Database
         } catch (mysqli_sql_exception $exception) {
             $this->_setDbError('mysqli_connect()');
         }
+    }
+
+
+    protected function _query($query, &$total)
+    {
+        $BM = function_exists('BM') ? 'BM' : function () {};
+
+        $benchmarkLabel = "Databases / Mysqli / " . substr($query[0] ?? '', 0, 150);
+        $BM($benchmarkLabel);
+
+        if (!$this->link) {
+            $BM("Databases / Mysqli / Connect");
+            $this->lazyConnect();
+            $BM("Databases / Mysqli / Connect");
+        }
+        $result = parent::_query($query, $total);
+
+        $BM($benchmarkLabel);
+
+        return $result;
     }
 
 
