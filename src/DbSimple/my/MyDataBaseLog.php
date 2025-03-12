@@ -102,10 +102,9 @@ class MyDataBaseLog
                     $error     = $log2['error'];
                     $query     = $log1['q'];
                     $time      = number_format($execTime, 5, '.', ' ');
-                    $count     = $log1['count'];
                     ?>
                     <tr>
-                        <td class="num" style="width: 50px;"><?= (int)(++$curElem); ?></td>
+                        <td class="num" style="width: 50px;"><?= ++$curElem ?></td>
                         <td style='color: <?= $color ?>'>
                             <pre><?= wordwrap($query, $maxLen, PHP_EOL); ?></pre>
                             <?php if ($isError): ?>
