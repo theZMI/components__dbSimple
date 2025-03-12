@@ -117,7 +117,7 @@ class DbSimple_Mysqli extends DbSimple_Database
     protected function _performEscape($s, $isIdent = false)
     {
         if (!$isIdent) {
-            return "'" . mysqli_real_escape_string($this->link, $s) . "'";
+            return "'" . mysqli_real_escape_string($this->link, strval($s)) . "'";
         } else {
             return "`" . str_replace('`', '``', $s) . "`";
         }

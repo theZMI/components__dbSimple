@@ -3,24 +3,79 @@
 class MyDataBaseCache
 {
     const IS_ACTIVE = true;
-    const CACHE_DIR = 'tmp/db_cache/';
+    const CACHE_DIR = 'tmp/db_cache__as1553xzvghXP/';
 
-    public static function cache($key, $data)
+    const CACHE_TIME = 30; // В секундах
+
+    public static function fileCache($key, $data = null)
     {
         $isGet = is_null($data);
         $isSet = !$isGet;
-
-        $ret = '';
+        $file  = BASEPATH . self::CACHE_DIR . "{$key}.txt";
 
         if ($isSet) {
-            self::set($key, $data);
+            FileSys::writeFile($file, $data);
+            return $data;
         }
         if ($isGet) {
-            $ret = self::get($key);
-        }
+            $r = FileSys::readFile($file);
+            if (!$r) {
+                return '';
+            }
 
-        return $ret;
+            $data = unserialize($r);
+            if ($data['ttl'] < time()) { // Is expired?
+                return '';
+            }
+
+            return $r;
+        }
+        return '';
     }
+
+    public static function staticCache($key, $data = null)
+    {
+        $isGet = is_null($data);
+        $isSet = !$isGet;
+        static $cache = [];
+
+        if ($isSet) {
+            $cache[$key] = $data;
+            return $data;
+        }
+        if ($isGet) {
+            return $cache[$key] ?? '';
+        }
+        return '';
+    }
+
+    public static function cacheTag($query, $time = self::CACHE_TIME)
+    {
+        $h = intval($time / 3600);
+        $time -= 3600*$h;
+        $m = intval($time / 60);
+        $time -= 60*$m;
+        $s = intval($time);
+        $hms = +$h . 'h ' . +$m . 'm ' . +$s;
+        return "-- CACHE: {$hms}" . PHP_EOL . $query;
+    }
+
+//    public static function cache($key, $data = null)
+//    {
+//        $isGet = is_null($data);
+//        $isSet = !$isGet;
+//
+//        $ret = '';
+//
+//        if ($isSet) {
+//            self::set($key, $data);
+//        }
+//        if ($isGet) {
+//            $ret = self::get($key);
+//        }
+//
+//        return $ret;
+//    }
 
     private static function getFileNameByKey($key)
     {

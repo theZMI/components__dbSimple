@@ -611,7 +611,8 @@ abstract class DbSimple_Database extends DbSimple_LastError
                     serialize(array(
                         'invalCache' => $uniq_key,
                         'result'     => $result,
-                        'rows'       => $rows
+                        'rows'       => $rows,
+                        'ttl'        => $ttl,
                     )),
                     $hash,
                     array(),
