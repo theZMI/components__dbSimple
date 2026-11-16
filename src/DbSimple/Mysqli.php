@@ -88,6 +88,18 @@ class DbSimple_Mysqli extends DbSimple_Database
     }
 
 
+    // Connect on first use: queries, escaping and transactions may be the first call after constructor
+    protected function ensureConnected()
+    {
+        if (!$this->link) {
+            $BM = function_exists('BM') ? 'BM' : function () {};
+            $BM("Databases / Mysqli / Connect");
+            $this->lazyConnect();
+            $BM("Databases / Mysqli / Connect");
+        }
+    }
+
+
     protected function _query($query, &$total)
     {
         $BM = function_exists('BM') ? 'BM' : function () {};
@@ -101,11 +113,7 @@ class DbSimple_Mysqli extends DbSimple_Database
             );
         $BM($benchmarkLabel);
 
-        if (!$this->link) {
-            $BM("Databases / Mysqli / Connect");
-            $this->lazyConnect();
-            $BM("Databases / Mysqli / Connect");
-        }
+        $this->ensureConnected();
         $result = parent::_query($query, $total);
 
         $BM($benchmarkLabel);
@@ -117,6 +125,7 @@ class DbSimple_Mysqli extends DbSimple_Database
     protected function _performEscape($s, $isIdent = false)
     {
         if (!$isIdent) {
+            $this->ensureConnected();
             return "'" . mysqli_real_escape_string($this->link, strval($s)) . "'";
         } else {
             return "`" . str_replace('`', '``', $s) . "`";
@@ -159,6 +168,7 @@ class DbSimple_Mysqli extends DbSimple_Database
 
     protected function _performTransaction($parameters = null)
     {
+        $this->ensureConnected();
         if (function_exists('mysqli_begin_transaction')) {
             return mysqli_begin_transaction($this->link);
         } else {
@@ -169,12 +179,14 @@ class DbSimple_Mysqli extends DbSimple_Database
 
     protected function _performCommit()
     {
+        $this->ensureConnected();
         return mysqli_commit($this->link);
     }
 
 
     protected function _performRollback()
     {
+        $this->ensureConnected();
         return mysqli_rollback($this->link);
     }
 
